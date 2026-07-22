@@ -127,5 +127,17 @@ def update_truck(id):
         "plate_number": truck.plate_number
     }), 201
 
+@app.route("/trucks/<int:id>", methods=["DELETE"])
+def delete_truck(id):
+    truck = Truck.query.filter_by(id=id).first()
+    if not truck:
+        return jsonify({"error":"Truck not found"})
+    db.session.delete(truck)
+    db.session.commit()
+    return jsonify({
+        "id": truck.id,
+        "name": truck.plate_number
+    }), 201
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
