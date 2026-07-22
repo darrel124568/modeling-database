@@ -91,14 +91,14 @@ def add_truck():
         return jsonify({"error": "Driver not found"}), 404
     
 
-    new_truck = Truck(name=data["name"], driver_id=driver_id)
+    new_truck = Truck(plate_number=data["plate_number"], driver_id=driver_id)
     db.session.add(new_truck)
     db.session.commit()
 
     return jsonify(
         {
             "id": new_truck.id,
-            "name": new_truck.name
+            "plate_number": new_truck.plate_number
         }
     ), 201
 
