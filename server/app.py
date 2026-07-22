@@ -135,12 +135,15 @@ def delete_truck(id):
     truck = Truck.query.filter_by(id=id).first()
     if not truck:
         return jsonify({"error":"Truck not found"})
-    db.session.delete(truck)
-    db.session.commit()
-    return jsonify({
+    
+    truck_data = {
         "id": truck.id,
         "plate_number": truck.plate_number
-    }), 201
+    }
+
+    db.session.delete(truck)
+    db.session.commit()
+    return jsonify(truck_data), 201
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
