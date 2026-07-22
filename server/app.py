@@ -77,7 +77,7 @@ def delete_driver(id):
     }), 201
 
 @app.route("/trucks", methods=["GET"])
-def get_trcuks():
+def get_trucks():
     trucks = Truck.query.all()
     return jsonify([{"id": truck.id, "plate_number": truck.plate_number} for truck in trucks])
 
@@ -136,7 +136,7 @@ def delete_truck(id):
     db.session.commit()
     return jsonify({
         "id": truck.id,
-        "name": truck.plate_number
+        "plate_number": truck.plate_number
     }), 201
 
 if __name__ == '__main__':
