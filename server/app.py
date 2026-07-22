@@ -81,5 +81,26 @@ def get_trcuks():
     trucks = Truck.query.all()
     return jsonify([{"id": truck.id, "plate_number": truck.plate_number} for truck in trucks])
 
+@app.route("/trucks", methods=['POST'])
+def add_truck():
+    data = request.get_json()
+    
+    driver_id = data.get("driver_id", None)
+
+    if driver_id is None:
+        return jsonify({"error": "Driver not found"}), 404
+    
+
+    new_truck = Truck(name=data["name"], driver_id=driver_id)
+    db.session.add(new_truck)
+    db.session.commit()
+
+    return jsonify(
+        {
+            "id": new_truck.id,
+            "name": new_truck.name
+        }
+    ), 201
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
