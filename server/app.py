@@ -130,6 +130,49 @@ def update_trip(id):
     for key, value in data.items():
         if hasattr(trip, key):
             setattr(trip, key, value)
+@app.route("/trucks", methods=["GET"])
+def get_trucks():
+    trucks = Truck.query.all()
+    return jsonify([{"id": truck.id, "plate_number": truck.plate_number} for truck in trucks])
+
+@app.route("/trucks", methods=['POST'])
+def add_truck():
+    data = request.get_json()
+    
+    driver_id = data.get("driver_id", None)
+    driver = Driver.query.filter_by(id=driver_id).first()
+
+    if not driver and driver_id != None:
+        return jsonify({"error": "Driver not found"}), 404
+    
+    new_truck = Truck(plate_number=data["plate_number"], driver_id=driver_id)
+    db.session.add(new_truck)
+    db.session.commit()
+
+    return jsonify(
+        {
+            "id": new_truck.id,
+            "plate_number": new_truck.plate_number
+        }
+    ), 201
+
+@app.route("/trucks/<int:id>", methods=["PATCH", "PUT"])
+def update_truck(id):
+    data = request.get_json()
+    truck = Truck.query.filter_by(id=id).first()
+
+    if not truck:
+        return jsonify({"error":"Truck not found"})
+    
+    driver_id = data.get("driver_id", None)
+    driver = Driver.query.filter_by(id=driver_id).first()
+
+    if not driver and driver_id != None:
+        return jsonify({"error": "Driver not found"}), 404
+    
+    for key, value in data.items():
+        if hasattr(truck, key):
+            setattr(truck, key, value)
 
     db.session.commit()
 
@@ -162,5 +205,21 @@ def delete_trip(id):
         "driver_id": trip.driver_id,
         "truck_id": trip.truck_id
     }), 201
+        "id": truck.id,
+        "plate_number": truck.plate_number
+    }), 201
+
+@app.route("/trucks/<int:id>", methods=["DELETE"])
+def delete_truck(id):
+    truck = Truck.query.filter_by(id=id).first()
+    if not truck:
+        return jsonify({"error":"Truck not found"})
+    db.session.delete(truck)
+    db.session.commit()
+    return jsonify({
+        "id": truck.id,
+        "plate_number": truck.plate_number
+    }), 201
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
