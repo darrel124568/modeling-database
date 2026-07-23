@@ -60,11 +60,15 @@ def delete_driver(id):
     driver = Driver.query.filter_by(id=id).first()
     if not driver:
         return jsonify({"error":"Driver not found"})
-    db.session.delete(driver)
-    db.session.commit()
-    return jsonify({
+    
+    driver_data = {
         "id": driver.id,
         "name": driver.name
+    }
+
+    db.session.delete(driver)
+    db.session.commit()
+    return jsonify(driver_data), 201
     }), 201
 # ==========================================
 # TRIP CRUD OPERATIONS
@@ -205,12 +209,15 @@ def delete_truck(id):
     truck = Truck.query.filter_by(id=id).first()
     if not truck:
         return jsonify({"error":"Truck not found"})
-    db.session.delete(truck)
-    db.session.commit()
-    return jsonify({
+    
+    truck_data = {
         "id": truck.id,
         "plate_number": truck.plate_number
-    }), 201
+    }
+
+    db.session.delete(truck)
+    db.session.commit()
+    return jsonify(truck_data), 201
 
 #Revenue
 @app.route('/revenue', methods=['GET'])
