@@ -64,6 +64,17 @@ def delete_driver(id):
     return jsonify({"id": driver.id, "name": driver.name}), 200
 
 
+        return jsonify({"error":"Driver not found"})
+    
+    driver_data = {
+        "id": driver.id,
+        "name": driver.name
+    }
+
+    db.session.delete(driver)
+    db.session.commit()
+    return jsonify(driver_data), 201
+    }), 201
 # ==========================================
 # TRIP CRUD OPERATIONS
 # ==========================================
@@ -218,6 +229,16 @@ def delete_truck(id):
 
     db.session.delete(truck)
     db.session.commit()
+        return jsonify({"error":"Truck not found"})
+    
+    truck_data = {
+        "id": truck.id,
+        "plate_number": truck.plate_number
+    }
+
+    db.session.delete(truck)
+    db.session.commit()
+    return jsonify(truck_data), 201
 
     return jsonify({"id": truck.id, "plate_number": truck.plate_number}), 200
 
